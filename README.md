@@ -1,4 +1,4 @@
-# (Really) Simple Blog 
+# Clog: Command Line blOG
 
 Mini-project to create quick blog with PHP and Bash. It's effectively a static site generator but one which uses PHP to `include` the header and footer and some other important parts. This is mainly a tool for my personal convenience. 
 
@@ -15,9 +15,14 @@ Mini-project to create quick blog with PHP and Bash. It's effectively a static s
 
 ## Usage
 
+Keep the script in the site root directory to make
+things simple. 
+
 `./sb add` takes you through the process of writing a post
 
 `./sb post` allows you to select which draft post you want to post
+
+`./sb remove` or `./sb rm` allows you to remove a post
 
 
 ## Todo
