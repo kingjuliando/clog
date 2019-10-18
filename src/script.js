@@ -17,18 +17,22 @@
     // Light // Dark // Modes //
       var lightdark = document.cookie;
       if (lightdark == "lida=dark") {
-        swapSheet("src/dark.css");
+        document.cookie = "lida=dark;path=/";
+        swapSheet("/src/dark.css");
+      } else if (lightdark == "lida=light;path=/") {
+        document.cookie = "lida=light";
+        swapSheet("/src/light.css");
       } else {
-        swapSheet("src/light.css");
+        swapSheet("/src/light.css");
       }
       var button = document.getElementById("swapper");
       button.onclick = function() { 
         if (styelm.href.match("src/light.css")) {
-          document.cookie = "lida=dark";
-          swapSheet("src/dark.css");
+          document.cookie = "lida=dark;path=/";
+          swapSheet("/src/dark.css");
         } else {
-          document.cookie = "lida=light";
-          swapSheet("src/light.css"); 
+          document.cookie = "lida=light;path=/";
+          swapSheet("/src/light.css"); 
         }
       }
     });

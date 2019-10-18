@@ -69,14 +69,31 @@
     done 
 
   # Get File
-    ptphtml="$(echo "${posttopost}" | cut -d "." -f 1).html"
+    ptphtml="$(echo "${posttopost}" | cut -d "." -f 1).php"
     ptphtml="posts/drafts/${ptphtml}"
 
   # Convert File to HTML
     # It's not well written at the moment
     # but it is functional
     ul="false"
-    echo "<!--POSTINFO:${ptphtml}-->" > "${ptphtml}"
+    echo "<!DOCTYPE html>
+    <html>
+    <head>
+    <meta type=\"description\" content=\"${descvar}\" />
+    <title>${titlevar} | ${blogname}</title>
+    <link href=\"/src/light.css\" rel=\"stylesheet\" type=\"text/css\" />
+    <style>
+      <?php include(\"../src/main.css\"); ?>
+    </style>
+    </head>
+    <body>
+    <section>
+      <div id=\"swapper\" class=\"swapTogOuter\">
+        <div class=\"swapTog\"></div><div class=\"swapTogText\">
+          <p>Mode</p>
+        </div>
+      </div>" > "${ptphtml}"
+    echo "<!--POSTINFO:${ptphtml}-->" >> "${ptphtml}"
     while read -r line ; do
 
       # Skip if empty line
@@ -132,7 +149,15 @@
 
       fi
     done < "posts/drafts/${posttopost}"
-
+      # Footer 
+      echo "
+            <?php include(\"../footer.html\"); ?>
+        </section>
+        <script type=\"text/javascript\">
+          <?php include(\"../src/script.js\"); ?>
+        </script>
+      </body>
+      </html>" >> "${ptphtml}"
   # Moving .html To Correct Place
     if [ ! -d "posts/published" ] ; then mkdir "posts/published" ; fi
     mv "posts/drafts/${posttopost}" "posts/published/${posttopost}" 

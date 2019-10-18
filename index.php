@@ -19,7 +19,7 @@
       Blog Title
     </h1>
       <?php
-      $files = glob(dirname(__FILE__) . '/posts/*.html');
+      $files = glob(dirname(__FILE__) . '/posts/*.php');
       usort($files, function($a, $b) {return filemtime($a) < filemtime($b);});
             foreach($files as $file) {
               $link = '/posts' . substr($file, strrpos($file, '/'));
