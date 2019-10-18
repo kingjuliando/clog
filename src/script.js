@@ -16,7 +16,7 @@
 
     // Light // Dark // Modes //
       var lightdark = document.cookie;
-      if (lightdark = "dark") {
+      if (lightdark == "lida=dark") {
         swapSheet("src/dark.css");
       } else {
         swapSheet("src/light.css");
