@@ -1,3 +1,2 @@
 User-agent: *
-Disallow: /sblog
-Disallow: /sblog.conf
+Disallow: /clog
