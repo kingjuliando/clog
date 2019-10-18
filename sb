@@ -9,10 +9,10 @@
 # List Drafts
   function listdrafts {
     echo ""
-    printf "Files in Drafts: \n "
+    echo "Current Draft Posts: "
     count=1
     for file in posts/drafts/* ; do
-      printf "   ${count}: ${file##*/}\n"
+      echo "   ${count}: ${file##*/}"
       count=$((count+1))
     done
     echo ""

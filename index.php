@@ -2,17 +2,18 @@
 <html>
 <head>
   <meta type="description" content="This blog is a template page. Please change literally everything." />
-  <title>Blog Testing</title>
+  <title>Blog | Tag Line</title>
+  <link href="light.css" rel="stylesheet" type="text/css" />
   <style>
-  <?php include_once("style.css"); ?>
+    <?php include("main.css"); ?>
   </style>
 </head>
 <body>
   <section>
+  <div id="swapper" class="swapTog"></div>
   <h1>
-    Blog Post Testing
+    Blog Title
   </h1>
-    <div class="blogfeed">
     <?php
 #    $fileboy = dirname(__FILE__) . '/posts/*.html';
     $files = glob(dirname(__FILE__) . '/posts/*.html');
@@ -62,20 +63,37 @@
 
     ?>
 
-        <div>
-          <div>
-            <p>
-              <a href="<?php print "$link"; ?>">
+      <div class="post-tiles">
+            <a href="<?php print "$link"; ?>">
+              <h3>
                 <?php print $h1_tag . "\n"; ?>
+              </h3>
+              <p>
                 <?php print $p_tag . "<Br />\n"; ?>
-              </a>
-            </p>
-        </div>
+              </p>
+            </a>
       </div>
     <?php
       }
     ?>
-    </div>
   </section>
+  <script type="text/javascript">
+  // Light // Dark // Modes //
+    function swapSheet(sheet) {
+      styelm.setAttribute("href", sheet);
+    }
+    function loaded() {
+      var button = document.getElementById("swapper");
+      button.onclick = function() { 
+        if (styelm.href.match("light.css")) {
+          swapSheet("dark.css");
+        } else {
+          swapSheet("light.css"); 
+        }
+      }
+    }
+    var styelm = document.getElementsByTagName("link")[0];
+    window.onload = loaded; 
+  </script>
 </body>
 </html>
