@@ -3,9 +3,9 @@
 <head>
   <meta type="description" content="This blog is a template page. Please change literally everything." />
   <title>Blog | Tag Line</title>
-  <link href="light.css" rel="stylesheet" type="text/css" />
+  <link href="src/light.css" rel="stylesheet" type="text/css" />
   <style>
-    <?php include("main.css"); ?>
+    <?php include("src/main.css"); ?>
   </style>
 </head>
 <body>
@@ -85,10 +85,10 @@
     function loaded() {
       var button = document.getElementById("swapper");
       button.onclick = function() { 
-        if (styelm.href.match("light.css")) {
-          swapSheet("dark.css");
+        if (styelm.href.match("src/light.css")) {
+          swapSheet("src/dark.css");
         } else {
-          swapSheet("light.css"); 
+          swapSheet("src/light.css"); 
         }
       }
     }
