@@ -1,0 +1,37 @@
+#!/bin/bash 
+
+# Create Index File, Listing Posts, Etc.
+
+  cloghome=".."
+  title=$(grep "title" ${cloghome}/.clogrc | sed -e "s/title://")
+  descr=$(grep "descr" ${cloghome}/.clogrc | sed -e "s/descr://")
+
+# Header
+  echo "<!DOCTYPE html>
+  <html>
+  <head>
+    <meta type="description" content="${descr}" />
+    <title>Home | ${title}</title>
+    <link href="src/light.css" rel="stylesheet" type="text/css" />
+    <style>" > ${cloghome}/index.html
+  # Get Style
+  cat ${cloghome}/src/main.css >> ${cloghome}/index.html
+  echo "</style>
+  </head>
+  <body>
+    <section>
+      <div id="swapper" class="swapTogOuter">
+        <div class="swapTog"></div><div class="swapTogText">
+          <p>Mode</p>
+        </div>
+      </div>
+      <h1>
+        ${title}
+      </h1>" >> ${cloghome}/index.html
+
+# Post Sort and Main Body
+
+
+# Footer
+  cat ${cloghome}/src/footer.html >> ${cloghome}/index.html
+

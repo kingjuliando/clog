@@ -20,6 +20,7 @@
   }  
 
 # MAIN
+  if [[ ! -d posts/drafts ]] ; then mkdir posts/drafts ]] ; fi
   if [[ ${1} = "add" ]] || [[ ${1} = "new" ]] ; then 
 
 # Adding a post    
@@ -41,7 +42,7 @@
       vim "posts/drafts/$posttitle.md"
 
 
-  elif [[ ${1} = "post" ]] ; then
+  elif [[ ${1} = "post" ]] || [[ ${1} = "publish" ]] ; then
 
 # Posting a post
     while true ; do
@@ -194,5 +195,8 @@
         rm "posts/${posttoremove}"
 
 # Else
-  else echo "This instruction needs a valid argument."
+  else echo "This instruction needs a valid argument:"
+       echo " - add / new           create a draft post"
+       echo " - post / publish      publish a draft post"
+       echo " - remove              remove a published post"
   fi
