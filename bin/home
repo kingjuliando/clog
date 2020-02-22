@@ -2,9 +2,8 @@
 
 # Create Index File, Listing Posts, Etc.
 
-  cloghome=".."
-  title=$(grep "title" ${cloghome}/.clogrc | sed -e "s/title://")
-  descr=$(grep "descr" ${cloghome}/.clogrc | sed -e "s/descr://")
+  title=$(grep "title" .clogrc | sed -e "s/title://")
+  descr=$(grep "descr" .clogrc | sed -e "s/descr://")
 
 # Header
   echo "<!DOCTYPE html>
@@ -13,9 +12,9 @@
     <meta type="description" content="${descr}" />
     <title>Home | ${title}</title>
     <link href="src/light.css" rel="stylesheet" type="text/css" />
-    <style>" > ${cloghome}/index.html
+    <style>" > index.html
   # Get Style
-  cat ${cloghome}/src/main.css >> ${cloghome}/index.html
+  cat src/main.css >> index.html
   echo "</style>
   </head>
   <body>
@@ -27,11 +26,11 @@
       </div>
       <h1>
         ${title}
-      </h1>" >> ${cloghome}/index.html
+      </h1>" >> index.html
 
 # Post Sort and Main Body
 
 
 # Footer
-  cat ${cloghome}/src/footer.html >> ${cloghome}/index.html
+  cat src/footer.html >> index.html
 

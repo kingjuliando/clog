@@ -16,3 +16,6 @@
 # Print To File
   echo title:${blogtitle} > .clogrc
   echo descr:${blogdesc} >> .clogrc
+
+# Re-Format Home
+  bin/home
