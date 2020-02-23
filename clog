@@ -25,10 +25,11 @@
     plarr=($postlist)
     for i in "${plarr[@]}" ; do
       filenm="posts/${i}"
+      ptitle=$(grep '<h1>' ${filenm} | sed -e "s/<h1>//g;s/\<\/h1\>//g")
       echo "<div>" >> index.html
       echo "  <a href=\"$filenm\">" >> index.html
       echo "    <h3>" >>index.html
-      echo "    idk just testing" >> index.html
+      echo "      ${ptitle}" >> index.html
       echo "    </h3>">>index.html
       echo "  </a>" >> index.html
       echo "</div>" >> index.html
