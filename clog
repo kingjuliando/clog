@@ -19,13 +19,16 @@
     descr=$(grep "descr" .clogrc | sed -e "s/descr://")
   # Header
     echo $(sed "s/<!--BLOG-TITLE-->/${title}/;s/<!--BLOG-DESCRIPTION-->/${descr}/" src/head.html) > index.html
+    echo "<h1>${title}</h1>" >> index.html
+    echo "<p>${descr}</p>" >> index.html
   # Post Sort and Main Body
     postlist=$(ls -t posts)
     postlist=$(sed 's/drafts//g;s/published//g' <<< ${postlist})
     plarr=($postlist)
     for i in "${plarr[@]}" ; do
       filenm="posts/${i}"
-      ptitle=$(grep '<h1>' ${filenm} | sed -e "s/<h1>//g;s/\<\/h1\>//g")
+      ptitle=$(grep '<h1>' ${filenm} | sed "s/^\<h1\>.*\<\/h1\>//g")
+      ptitle=$(sed "s/<h1>//g;s/<\/h1>//g" <<< "${ptitle}")
       echo "<div>" >> index.html
       echo "  <a href=\"$filenm\">" >> index.html
       echo "    <h3>" >>index.html
