@@ -1,0 +1,134 @@
+#!/usr/bin/perl
+
+# Title:	blog
+# By: 		kingjuliando
+# Tag Added:	25-06-2020
+# Description:  The newest version of CLog, written in Perl this time
+
+
+use strict;
+use warnings;
+
+use Switch;         # Switch
+use Cwd qw();       # Current Directory
+use Text::Markdown 'markdown';
+use File::Slurp;
+
+my $curdir = Cwd::cwd();
+
+
+# Argument
+  my $ar = shift(@ARGV);
+  switch($ar) {
+    case "add"          { add(); }
+    case "publish"      { publish(); }
+    case "rm"           { print "REMOVE" }
+    case "update"       { updateindex(); }
+    case "setup"        { print "Setup" }
+    else                { print "HELP, not recognized" }
+  }
+
+
+# Add
+  sub add {
+    print "What would you like to call your post? ";
+    my $postname = <STDIN>;
+    chomp $postname;
+
+  # Print this to file eventually
+    print "The post title is '$postname'\n";
+    $postname =~ tr/ /-/;
+    $postname = lc($postname);
+    print "The URL will (when published) be '/posts/$postname.html'\n";
+
+  # Open File In VIM
+    `vim -o "$curdir/posts/drafts/$postname.markdown" >/dev/tty`;
+  }
+
+
+# Publish
+  sub publish {
+    print "The posts you can publish are...\n";
+
+  # List Folders
+    my $fold     = 'posts/drafts';
+    my @filelist = listfolder($fold);
+
+  # Select File
+    print "\nWhich of the above would you like the publish (please enter the corresponding number)? ";
+    my $choice = <STDIN>;
+
+    #print "You chose $filelist[$choice]";
+    html2mkdn($filelist[$choice]);
+  }
+
+
+# List Folders
+  sub listfolder {
+
+    my @filelist = "";
+    my $ftl   = $_[0]; # Input folder to list
+    my $counter   = 1; 
+
+    opendir (DIR, $ftl) or die $!;
+    while (my $file = readdir(DIR)) {
+      my $flen = length $file;
+      if ($flen > 3) { 
+        print "  $counter)  $file\n"; 
+        push(@filelist, "$file");
+      }
+      $counter = $counter + 1;
+    }
+    return @filelist;
+  }
+
+# HTML to Markdown
+  sub html2mkdn {
+
+    my $file = $_[0] =~ s/markdown/html/r; 
+    my $mkdn = read_file("$curdir/posts/drafts/$_[0]");
+  # Get SEO and Index Title and Description
+    my $head = read_file("$curdir/src/head.html");
+    print "\nWhat would you like to name it? ";
+    my $titl = <STDIN>;
+       $head = $head =~ s/<!--BLOG-TITLE-->/$titl/r;
+    print "\nPlease add a brief description: ";
+    my $desc = <STDIN>;
+       $head = $head =~ s/<!--BLOG-DESCRIPTION-->/$desc/r;
+    my $body = markdown($mkdn);
+    my $foot = read_file("$curdir/src/footer.html");
+
+    open(my $fh, '>', "$curdir/posts/$file") or die "Cannot open a new file to convert to HTML";
+      print $fh $head;
+      print $fh $body;
+      print $fh $foot;
+    close $fh;
+
+  }
+
+  sub updateindex {
+    
+  # Blog Info
+    my $blogname = "Sample Blog";
+    my $blogdescription = "This is a sample blog description.";
+
+  # Add Blog Titles and Description to <head>
+    my $head = read_file("$curdir/src/head.html");
+       $head = $head =~ s/<!--BLOG-TITLE-->/$blogname/r;
+       $head = $head =~ s/<!--BLOG-DESCRIPTION-->/$blogdescription/r;
+    my $foot = read_file("$curdir/src/footer.html");
+
+  # Get File Array 
+    my @post = read_dir("$curdir/posts") ;
+    print @post;
+    
+  # Write to Index File
+    open(my $fl, '>', "$curdir/index.html") or die "Cannot open file index.html";
+      print $fl $head;
+      print $fl "<h1>$blogname</h1>";
+      print $fl "<h3>$blogdescription</h3>";
+      # print $fl $list;
+      print $fl $foot;
+    close $fl;
+ 
+  }

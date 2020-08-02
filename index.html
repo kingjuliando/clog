@@ -1,21 +1,111 @@
-<!DOCTYPE html> <html> <head> <meta type="description" content="This is an example CLOG config file, and description for the site!" /> <title>Command Line blOG</title> <link href="src/light.css" rel="stylesheet" type="text/css" /> <style> ::selection { background: #FEB; } @import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap'); h1, h2, h3, h4, h5, h6, p { line-height: 1.5; font-family: 'Roboto Mono', monospace; font-weight: 100; } h1 { padding: 40px 0px 20px 0px; } a { text-decoration: none; position: relative; } a::after:hover, div.post-titles:hover h3::after, div.post-titles:hover p::after { content: ''; position: absolute; width: 100%; height: 1px; bottom: -2px; left: 0px; } section { max-width: 500px; width: calc(100%-80px); margin: 0px auto; position: relative; } div { padding: 8px 0px 12px 0px; position: relative; } div::before, div::after { content: ''; width: 100%; height: 1px; position: absolute; left: 0px; } div::before { top: -1px; } div::after { bottom: 0px; } .swapTogOuter { position: absolute; top: 10px; right: 0px; padding: 0; cursor: pointer; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } .swapTogOuter div { padding: 0; margin: 0px 4px; display: inline-block; } .swapTogOuter::before, .swapTogOuter::after, .swapTogText::after, .swapTogOuter div::before { display: none !important; } .swapTogText { transform: translateY(-4px); } .swapTog { width: 36px; height: 16.5px; border-radius: 30px; position: relative; } .swapTog::after { content: ''; width: 13.5px; height: 13.5px; border-radius: 30px; position: absolute; top: 1.5px; transition: all ease 0.2s; } </style> </head> <body> <section> <div id="swapper" class="swapTogOuter"> <div class="swapTog"></div><div class="swapTogText"> <p>Mode</p> </div> </div>
-<h1>Command Line blOG</h1>
-<p>This is an example CLOG config file, and description for the site!</p>
-<div>
-  <a href="posts/This-Is-A-Real-Test.html">
-    <h3>
-      This... is a real test post
-    </h3>
-  </a>
-</div>
-<div>
-  <a href="posts/Even-better.html">
-    <h3>
-      This post is better than before
-    </h3>
-  </a>
-</div>
-    <br /><br />
+<!DOCTYPE html>
+<html>
+<head>
+  <meta type="description" content="This is a sample blog description." />
+  <title>Sample Blog</title>
+  <link href="src/light.css" rel="stylesheet" type="text/css" />
+  <style>
+    ::selection {
+      background: #FEB;
+    }
+    @import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap');
+    h1, h2, h3, h4, h5, h6, p {
+      line-height: 1.5;
+      font-family: 'Roboto Mono', monospace;
+      font-weight: 100;
+    }
+    h1 {
+      padding: 40px 0px 20px 0px;
+    }
+    a {
+      text-decoration: none;
+      position: relative;
+    }
+    a::after:hover, 
+    div.post-titles:hover h3::after,
+    div.post-titles:hover p::after {
+      content: ''; 
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      bottom: -2px;
+      left: 0px;
+    }
+    section {
+      max-width: 500px;
+      width: calc(100%-80px);
+      margin: 0px auto;
+      position: relative;
+    }
+    div {
+      padding: 8px 0px 12px 0px;
+      position: relative;
+    }
+    div::before, div::after {
+      content: '';
+      width: 100%;
+      height: 1px;
+      position: absolute;
+      left: 0px;
+    }
+    div::before {
+      top: -1px;
+    }
+    div::after {
+      bottom: 0px;
+    }
+  .swapTogOuter {
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    padding: 0;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+        -moz-user-select: none;
+          -ms-user-select: none;
+              user-select: none; 
+  }
+  .swapTogOuter div {
+    padding: 0;
+    margin: 0px 4px;
+    display: inline-block;
+  }
+  .swapTogOuter::before, 
+  .swapTogOuter::after, 
+  .swapTogText::after,
+  .swapTogOuter div::before {
+    display: none !important;
+  }
+  .swapTogText {
+    transform: translateY(-4px);
+  }
+  .swapTog {
+    width: 36px;
+    height: 16.5px;
+    border-radius: 30px;
+    position: relative;
+  }
+  .swapTog::after {
+    content: '';
+    width: 13.5px;
+    height: 13.5px;
+    border-radius: 30px;
+    position: absolute;
+    top: 1.5px;
+    transition: all ease 0.2s;
+  }
+  </style>
+</head>
+<body>
+  <section>
+    <div id="swapper" class="swapTogOuter">
+      <div class="swapTog"></div><div class="swapTogText">
+        <p>Mode</p>
+      </div>
+    </div>
+<h1>Sample Blog</h1><h3>This is a sample blog description.</h3>    <br /><br />
     <p>
       Content by Julian Orchard.
       <a href="https://github.com/OfficialKingJulian/Clog">
