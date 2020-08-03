@@ -1,201 +1,167 @@
-#!/bin/bash
-# Clog Dir
-  cl="$PWD"
-  function upset() {
-    printf "\n\nWarning: running this will remove any existing blog settings in clogrc.\n\nDo you with to proceed? (y/n) "
-    read yn
-    if [[ ${yn} = "n" ]] || [[ ${yn} = "no" ]] ; then exit 0 ; fi
-    printf "Blog Title: "
-    read blogtitle
-    printf "Blog Description: "
-    read blogdesc
-    echo title:${blogtitle} > .clogrc
-    echo descr:${blogdesc} >> .clogrc
+#!/usr/bin/perl
+
+# Title:	clog
+# By: 		kingjuliando
+# Tag Added:	25-06-2020
+# Description:  The newest version of CLog, written in Perl this time
+
+
+use strict;
+use warnings;
+
+use Switch;         # Switch
+use Cwd qw();       # Current Directory
+use Text::Markdown 'markdown';
+use File::Slurp;
+use Time::Piece;
+
+my $curdir = Cwd::cwd();
+
+
+# Argument
+  my $ar = shift(@ARGV);
+  switch($ar) {
+    case "add"          { add(); }
+    case "publish"      { publish(); }
+ #  case "rm"           { print "REMOVE" }   -- need to add
+    case "update"       { updateindex(); }
+ #  case "setup"        { print "Setup" }    -- need to add
+    else                { print "Use this command with ./clog add" }
   }
-# Update Index Page
-  function indexpage {
-  # Create Index File, Listing Posts, Etc.
-    title=$(grep "title" .clogrc | sed -e "s/title://")
-    descr=$(grep "descr" .clogrc | sed -e "s/descr://")
-  # Header
-    echo $(sed "s/<!--BLOG-TITLE-->/${title}/;s/<!--BLOG-DESCRIPTION-->/${descr}/" src/head.html) > index.html
-    echo "<h1>${title}</h1>" >> index.html
-    echo "<p>${descr}</p>" >> index.html
-  # Post Sort and Main Body
-    postlist=$(ls -t posts)
-    postlist=$(sed 's/drafts//g;s/published//g' <<< ${postlist})
-    plarr=($postlist)
-    for i in "${plarr[@]}" ; do
-      filenm="posts/${i}"
-      ptitle=$(grep '<h1>' ${filenm} | sed "s/^\<h1\>.*\<\/h1\>//g")
-      ptitle=$(sed "s/<h1>//g;s/<\/h1>//g" <<< "${ptitle}")
-      echo "<div>" >> index.html
-      echo "  <a href=\"$filenm\">" >> index.html
-      echo "    <h3>" >>index.html
-      echo "      ${ptitle}" >> index.html
-      echo "    </h3>">>index.html
-      echo "  </a>" >> index.html
-      echo "</div>" >> index.html
-    done
-  # Footer
-    cat "src/footer.html" >> index.html
+
+
+# Add
+  sub add {
+    print "What would you like to call your post? ";
+    my $postname = <STDIN>;
+    chomp $postname;
+
+  # Print this to file eventually
+    print "The post title is '$postname'\n";
+    $postname =~ tr/ /-/;
+    $postname = lc($postname);
+    print "The URL will (when published) be '/posts/$postname.html'\n";
+
+  # Open File In VIM
+    `vim -o "$curdir/posts/drafts/$postname.markdown" >/dev/tty`;
   }
-# List Files In A Folder
-  function listfiles {
-    echo ""
-    count=1
-    for file in ${loc} ; do
-      echo "   ${count}: ${file##*/}"
-      count=$((count+1))
-    done
-    echo ""
-  }  
-# Create Draft Post
-  function add() {
-    printf "What would you like to call the post? "
-    read -r posttitle
-    posttitle=$(sed "s/ /-/g" <<< "${posttitle}")
-    vim "posts/drafts/${posttitle}.md"
+
+
+# Publish
+  sub publish {
+    print "The posts you can publish are...\n";
+
+  # List Folders
+    my $fold     = 'posts/drafts';
+    my @filelist = listfolder($fold);
+
+  # Select File
+    print "\nWhich of the above would you like the publish (please enter the corresponding number)? ";
+    my $choice = <STDIN>;
+
+    #print "You chose $filelist[$choice]";
+    html2mkdn($filelist[$choice]);
   }
-# Publish Post
-  function pub {
-    # Get Post to Post
-    while true ; do
-      loc="posts/drafts/*"
-      listfiles
-      printf "Which draft would you like to post? "
-      read -r posttopost
-      reg='^[0-9]+$'
-      if [[ ${posttopost} =~ ${reg} ]] ; then 
-        listfiles > ./tmp
-        posttopost="1"
-        posttopost=$(grep "${posttopost}:" "./tmp" | \
-                     cut -d':' -f2 | cut -d' ' -f2)
-        rm ./tmp
-      fi
-      if [[ ! ${posttopost} == *".md"* ]] ; then 
-        posttopost=${posttopost}.md 
-      fi
-      if [ ! -f "posts/drafts/${posttopost}" ] ; then
-        echo "" 
-        echo "There has been an error. 
-              We can't find the post you're looking for." 
-        echo "Please try again."
-      else
-        break
-      fi
-    done 
-    filename="posts/drafts/$(echo "${posttopost}" | cut -d "." -f 1).html"
-    printf "What is the title of the post? "
-    read title
-    printf "Short post description: "
-    read descr
-    ul="false"
-    # HEAD
-    echo $(sed "s/<!--BLOG-TITLE-->/${title}/;s/<!--BLOG-DESCRIPTION-->/${descr}/" src/head.html) > "${filename}"
-    # BODY
-    echo "<!--POSTDATE:$(date +%Y/%m/%d-%H-%M)-->" >> "${filename}"
-    while read -r line ; do
-      # Skip if empty line
-      if [[ -z ${line} ]] ; then continue ; fi
-      # Heading 6
-      if [[ ${line} == *"###### "* ]] ; then
-        if [[ ${ul} = "true" ]] ; then echo "</ul>" >> "${filename}" ; ul="false" ; fi
-        h6="###### "
-        printf '%s\n' "<h6>${line//$h6/}</h6>" >> "${filename}"
-      # Heading 5
-      elif [[ ${line} == *"##### "* ]] ; then
-        if [[ ${ul} = "true" ]] ; then echo "</ul>" >> "${filename}" ; ul="false" ; fi
-        h5="##### "
-        printf '%s\n' "<h5>${line//$h5/}</h5>" >> "${filename}"
-      # Heading 4
-      elif [[ ${line} == *"#### "* ]] ; then
-        if [[ ${ul} = "true" ]] ; then echo "</ul>" >> "${filename}" ; ul="false" ; fi
-        h4="#### "
-        printf '%s\n' "<h4>${line//$h4/}</h4>" >> "${filename}"
-      # Heading 3
-      elif [[ ${line} == *"### "* ]] ; then
-        if [[ ${ul} = "true" ]] ; then echo "</ul>" >> "${filename}" ; ul="false" ; fi
-        h3="### "
-        printf '%s\n' "<h3>${line//$h3/}</h3>" >> "${filename}"
-      # Heading 2
-      elif [[ ${line} == *"## "* ]] ; then
-        if [[ ${ul} = "true" ]] ; then echo "</ul>" >> "${filename}" ; ul="false" ; fi
-        h2="## "
-        printf '%s\n' "<h2>${line//$h2/}</h2>" >> "${filename}"
-      # Heading 1
-      elif [[ ${line} == *"# "* ]] ; then
-        if [[ ${ul} = "true" ]] ; then echo "</ul>" >> "${filename}" ; ul="false" ; fi
-        h1="# "
-        printf '%s\n' "<h1>${line//$h1/}</h1>" >> "${filename}"
-      # UL
-      elif [[ ${line} == *"- "* ]] ; then
-        bulletpoint="- "
-        if [[ ${ul} = "false" ]] ; then echo "<ul>" >> "${filename}" ; fi
-        ul="true"
-        printf '%s\n' "<li><p>${line//$bulletpoint/}</p></li>" >> "${filename}"
-      # Paragraph Standard
-      else
-        if [[ ${ul} = "true" ]] ; then echo "</ul>" >> "${filename}" ; ul="false" ; fi
-        echo "<p>${line}</p>" >> "${filename}"
-      fi
-    done < "posts/drafts/${posttopost}"
-    # FOOT
-    cat "src/footer.html" >> "${filename}"
-  # Moving .html To Correct Place
-    if [ ! -d "posts/published" ] ; then mkdir "posts/published" ; fi
-    mv "posts/drafts/${posttopost}" "posts/published/${posttopost}" 
-    mv "${filename}" posts
+
+
+# List Folders
+  sub listfolder {
+
+    my @filelist = "";
+    my $ftl   = $_[0]; # Input folder to list
+    my $counter   = 1; 
+
+    opendir (DIR, $ftl) or die $!;
+    while (my $file = readdir(DIR)) {
+      my $flen = length $file;
+      if ($flen > 3) { 
+        print "  $counter)  $file\n"; 
+        push(@filelist, "$file");
+      }
+      $counter = $counter + 1;
+    }
+    return @filelist;
   }
-# Remove Post
-  function rem {
-    while true ; do
-      listlocation="posts/*.html"
-      listfiles
-      if [[ $listfiles = "*.html" ]] ; then echo "No Posts Found To Remove"; exit 0; fi
-      printf "Which post would you like to remove? "
-      read -r posttoremove
-      echo "${posttoremove}"
-      reg='^[0-9]+$' 
-      if [[ ${posttoremove} =~ ${reg} ]] ; then 
-        listfiles > ./tmp
-        posttoremove="1"
-        posttoremove=$(grep "${posttoremove}:" "./tmp" | \
-                    cut -d':' -f2 | cut -d' ' -f2)
-        rm ./tmp
-      fi
-      if [ ! -f "posts/${posttoremove}" ] ; then
-        echo "" 
-        echo "There has been an error. We can't find the post you're looking for." 
-        echo "Please try again."
-      else
-        break
-      fi
-    done 
-    rm "posts/${posttoremove}"
+
+# HTML to Markdown
+  sub html2mkdn {
+
+  # File URL and Add Date
+    my $file = $_[0] =~ s/markdown/html/r; 
+    my $date = localtime->strftime('%Y-%m-%d');
+       $file = "$date-$file";
+    my $mkdn = read_file("$curdir/posts/drafts/$_[0]");
+  # Get SEO and Index Title and Description
+    my $head = read_file("$curdir/src/head.html");
+    print "\nWhat would you like to name it? ";
+    my $titl = <STDIN>;
+       $head = $head =~ s/<!--BLOG-TITLE-->/$titl/r;
+    print "\nPlease add a brief description: ";
+    my $desc = <STDIN>;
+       $head = $head =~ s/<!--BLOG-DESCRIPTION-->/$desc/r;
+    my $body = markdown($mkdn);
+    my $foot = read_file("$curdir/src/footer.html");
+
+    open(my $fh, '>', "$curdir/posts/$file") or die "Cannot open a new file to convert to HTML";
+      print $fh $head;
+      print $fh $body;
+      print $fh $foot;
+    close $fh;
+
+  # Update The Index Page!
+    updateindex();
+
   }
-# Usage Instructions
-  function usage() {
-    echo "This instruction needs a valid argument:"
-    echo " - add / new           create a draft post"
-    echo " - post / publish      publish a draft post"
-    echo " - remove              remove a published post"
+
+  sub updateindex {
+    
+  # Blog Info
+    my $blogname = "Sample Blog";
+    my $blogdescription = "This is a sample blog description.";
+
+  # Add Blog Titles and Description to <head>
+    my $head = read_file("$curdir/src/head.html");
+       $head = $head =~ s/<!--BLOG-TITLE-->/$blogname/r;
+       $head = $head =~ s/<!--BLOG-DESCRIPTION-->/$blogdescription/r;
+    my $foot = read_file("$curdir/src/footer.html");
+   
+  # Write to Index File
+    open(my $fl, '>', "$curdir/index.html") or die "Cannot open file index.html";
+      print $fl $head;
+      print $fl "<h1>$blogname</h1>";
+      print $fl "<h3>$blogdescription</h3>";
+    # Get File Array 
+      my @post = read_dir("$curdir/posts") ;
+      foreach (@post) {
+
+      # Skip Drafts Folder
+        next if ($_ eq "drafts");
+
+    # Get Title, Description, Date
+      # Title, Desc from HTML
+        my @titl = grep { /(title)/ } read_file("$curdir/posts/$_");
+        my $ptit = $titl[0] =~ s/(<title>)|(<\/title>)//r;
+        my @desc = grep { /(description)/ } read_file("$curdir/posts/$_");
+        my $pdes = $desc[0] =~ s/(<meta type="description" content=")|(">)//r;
+
+        # Date from the URL
+        my @date = split('-', $_);
+
+      # Print HTML
+        print $fl "
+        <div>
+          <a href=\"posts/$_\">
+            <h2>
+              $ptit          </h2>
+              <p>
+              $pdes              <br />
+                Posted $date[2]/$date[1]/$date[0]
+              </p>
+          </a>
+        </div>
+        ";
+      }
+      print $fl $foot;
+    close $fl;
+ 
   }
-# Deal With Arguments 
-  case "${1}" in 
-    add|new) 
-      add
-      ;;
-    post|publish) 
-      pub
-      ;;
-    rm|remove) 
-      rem
-      ;;
-    setup)
-      upset
-      ;;
-    *) usage
-  esac 
-# Update the index page
-  indexpage
