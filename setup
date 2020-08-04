@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Title:	setup
+# By: 		kingjuliando
+# Tag Added:	04-08-2020
+# Description:  Add the blog title and blog description to ./clog
+
+grep

@@ -1,5 +1,5 @@
     ::selection {
-      background: #FEB;
+      background: yellow;
     }
     @import url('https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap');
     h1, h2, h3, h4, h5, h6, p {
@@ -9,6 +9,16 @@
     }
     h1 {
       padding: 40px 0px 20px 0px;
+      font-size: 29px;
+    }
+    h2 {
+      font-size: 22px;
+    }
+    h3 {
+      font-size: 17px;
+    }
+    p {
+      font-size: 14px;
     }
     a {
       text-decoration: none;
@@ -47,46 +57,4 @@
     div::after {
       bottom: 0px;
     }
-  .swapTogOuter {
-    position: absolute;
-    top: 10px;
-    right: 0px;
-    padding: 0;
-    cursor: pointer;
-    -webkit-touch-callout: none;
-      -webkit-user-select: none;
-       -khtml-user-select: none;
-         -moz-user-select: none;
-          -ms-user-select: none;
-              user-select: none; 
-  }
-  .swapTogOuter div {
-    padding: 0;
-    margin: 0px 4px;
-    display: inline-block;
-  }
-  .swapTogOuter::before, 
-  .swapTogOuter::after, 
-  .swapTogText::after,
-  .swapTogOuter div::before {
-    display: none !important;
-  }
-  .swapTogText {
-    transform: translateY(-4px);
-  }
-  .swapTog {
-    width: 36px;
-    height: 16.5px;
-    border-radius: 30px;
-    position: relative;
-  }
-  .swapTog::after {
-    content: '';
-    width: 13.5px;
-    height: 13.5px;
-    border-radius: 30px;
-    position: absolute;
-    top: 1.5px;
-    transition: all ease 0.2s;
-  }
 
